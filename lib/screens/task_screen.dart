@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:what_todo/models/task.dart';
 import 'package:what_todo/widgets/todo_widget.dart';
+import 'package:what_todo/helpers/database_helper.dart';
 
 class TaskScreen extends StatefulWidget {
   @override
@@ -39,6 +41,17 @@ class _TaskScreenState extends State<TaskScreen> {
                         ),
                         Expanded(
                           child: TextField(
+                            onSubmitted: (value) async {
+                              if (value != '') {
+                                DatabaseHelper _dbHelper = DatabaseHelper();
+                                Task _newTask = Task(
+                                  title: value,
+                                  description: '',
+                                );
+                                await _dbHelper.insertTask(_newTask);
+                                print('Inserted new task');
+                              }
+                            },
                             decoration: InputDecoration(
                               hintText: 'Enter Task Title',
                               border: InputBorder.none,
@@ -79,7 +92,6 @@ class _TaskScreenState extends State<TaskScreen> {
                     text: 'Just another todo',
                     isDone: false,
                   ),
-                  TodoWidget(),
                 ],
               ),
               Positioned(

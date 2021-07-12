@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:what_todo/helpers/database_helper.dart';
 import 'package:what_todo/widgets/task_card_widget.dart';
+import 'package:what_todo/models/task.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -9,6 +11,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  DatabaseHelper dbHelper = DatabaseHelper();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,25 +37,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Expanded(
-                    child: ListView(
-                      children: [
-                        TaskCardWidget(
-                          title: 'Get Started',
-                          description:
-                              'Hello! Welcome to Todo app, this is a default task that you can edit or delete to start using the app.',
-                        ),
-                        TaskCardWidget(),
-                        TaskCardWidget(),
-                        TaskCardWidget(),
-                        TaskCardWidget(),
-                        TaskCardWidget(),
-                      ],
+                    child: FutureBuilder<List<Task>>(
+                      initialData: [],
+                      future: dbHelper.getTasks(),
+                      builder: (context, snapshot) {
+                        return ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            return TaskCardWidget(
+                              title: snapshot.data![index].title,
+                              description: snapshot.data![index].description,
+                            );
+                          },
+                        );
+                      },
                     ),
                   )
                 ],
               ),
               Positioned(
-                top: 6.0,
+                bottom: 6.0,
                 right: 0.0,
                 child: GestureDetector(
                   onTap: () {
@@ -61,14 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 48.0,
                     height: 48.0,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xFF7349FE),
-                          Color(0xFF643FDB),
-                        ],
-                        begin: Alignment(0.0, -1.0),
-                        end: Alignment(0.0, 1.0),
-                      ),
+                      color: Color(0xFF7349FE),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     child: Image(

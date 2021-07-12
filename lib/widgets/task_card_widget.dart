@@ -4,9 +4,10 @@ class TaskCardWidget extends StatelessWidget {
   final String title;
   final String description;
 
-  TaskCardWidget(
-      {this.title = '(Unnamed Task)',
-      this.description = 'No Description Added'});
+  TaskCardWidget({
+    required this.title,
+    required this.description,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class TaskCardWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            title.isNotEmpty ? title : '(Unnamed Task)',
             style: TextStyle(
               color: Color(0xFF211551),
               fontSize: 20.0,
@@ -39,7 +40,7 @@ class TaskCardWidget extends StatelessWidget {
               top: 10.0,
             ),
             child: Text(
-              description,
+              description.isNotEmpty ? description : 'No Description Added',
               style: TextStyle(
                 color: Color(0xFF86829D),
                 height: 1.5,

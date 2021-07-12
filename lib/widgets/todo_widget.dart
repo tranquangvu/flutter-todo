@@ -4,7 +4,10 @@ class TodoWidget extends StatelessWidget {
   final String text;
   final bool isDone;
 
-  TodoWidget({this.text = '(Unnamed Todo)', this.isDone = false});
+  TodoWidget({
+    required this.text,
+    required this.isDone,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,7 @@ class TodoWidget extends StatelessWidget {
             ),
           ),
           Text(
-            text,
+            text.isNotEmpty ? text : '(Unnamed Todo)',
             style: TextStyle(
               color: isDone ? Color(0xFF211551) : Color(0xFF86829D),
               fontWeight: isDone ? FontWeight.bold : FontWeight.w500,
