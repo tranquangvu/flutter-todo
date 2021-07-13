@@ -17,10 +17,30 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme,
         ),
       ),
-      initialRoute: '/',
+      initialRoute: HomeScreen.routeName,
+      onGenerateRoute: (settings) {
+        final arguments = settings.arguments as Map<String, dynamic>;
+
+        switch (settings.name) {
+          case (TaskScreen.routeName):
+            {
+              // correct screen.
+              return MaterialPageRoute(
+                builder: (context) {
+                  return TaskScreen(
+                    task: arguments['task'],
+                  );
+                },
+              );
+            }
+          default:
+            {
+              return null;
+            }
+        }
+      },
       routes: {
-        '/': (context) => HomeScreen(),
-        '/task': (context) => TaskScreen(),
+        HomeScreen.routeName: (context) => HomeScreen(),
       },
     );
   }

@@ -4,11 +4,24 @@ import 'package:what_todo/widgets/todo_widget.dart';
 import 'package:what_todo/helpers/database_helper.dart';
 
 class TaskScreen extends StatefulWidget {
+  static const routeName = '/task';
+
+  final Task? task;
+
+  TaskScreen({
+    this.task,
+  });
+
   @override
   _TaskScreenState createState() => _TaskScreenState();
 }
 
 class _TaskScreenState extends State<TaskScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,14 +55,17 @@ class _TaskScreenState extends State<TaskScreen> {
                         Expanded(
                           child: TextField(
                             onSubmitted: (value) async {
-                              if (value != '') {
-                                DatabaseHelper _dbHelper = DatabaseHelper();
-                                Task _newTask = Task(
-                                  title: value,
-                                  description: '',
-                                );
-                                await _dbHelper.insertTask(_newTask);
-                                print('Inserted new task');
+                              if (value.isNotEmpty) {
+                                if (widget.task == null) {
+                                  DatabaseHelper _dbHelper = DatabaseHelper();
+                                  Task _newTask = Task(
+                                    title: value,
+                                    description: '',
+                                  );
+                                  await _dbHelper.insertTask(_newTask);
+                                } else {
+                                  print('Update existing task');
+                                }
                               }
                             },
                             decoration: InputDecoration(

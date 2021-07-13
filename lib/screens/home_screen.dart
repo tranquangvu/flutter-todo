@@ -4,7 +4,7 @@ import 'package:what_todo/widgets/task_card_widget.dart';
 import 'package:what_todo/models/task.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  static const routeName = '/';
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -44,9 +44,22 @@ class _HomeScreenState extends State<HomeScreen> {
                         return ListView.builder(
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
-                            return TaskCardWidget(
-                              title: snapshot.data![index].title,
-                              description: snapshot.data![index].description,
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/task',
+                                  arguments: {
+                                    'task': snapshot.data![index],
+                                  },
+                                ).then((value) {
+                                  setState(() {});
+                                });
+                              },
+                              child: TaskCardWidget(
+                                title: snapshot.data![index].title,
+                                description: snapshot.data![index].description,
+                              ),
                             );
                           },
                         );
@@ -56,11 +69,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               Positioned(
-                bottom: 6.0,
+                bottom: 24.0,
                 right: 0.0,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/task');
+                    Navigator.pushNamed(
+                      context,
+                      '/task',
+                      arguments: {
+                        'task': null,
+                      },
+                    ).then((value) {
+                      setState(() {});
+                    });
                   },
                   child: Container(
                     width: 48.0,
