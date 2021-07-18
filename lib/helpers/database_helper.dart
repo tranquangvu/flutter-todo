@@ -18,7 +18,20 @@ class DatabaseHelper {
     );
   }
 
-  Future<void> insertTask(Task task) async {
+  Future<List<Task>> getTasks() async {
+    Database _db = await database();
+    List<Map<String, dynamic>> _tasks = await _db.query('tasks');
+
+    return List.generate(_tasks.length, (i) {
+      return Task(
+        id: _tasks[i]['id'],
+        title: _tasks[i]['title'],
+        description: _tasks[i]['description'],
+      );
+    });
+  }
+
+  Future<int> insertTask(Task task) async {
     Database _db = await database();
     Map<String, dynamic> taskMap = task.toMap();
 
@@ -26,11 +39,58 @@ class DatabaseHelper {
       taskMap['id'] = null;
     }
 
+    int createdTaskId = 0;
     await _db.insert(
       'tasks',
       taskMap,
       conflictAlgorithm: ConflictAlgorithm.replace,
+    ).then((value) {
+      createdTaskId = value;
+    });
+
+    return createdTaskId;
+  }
+
+  Future<void> updateTask(int id, Map<String, dynamic> updatedData) async {
+    Database _db = await database();
+
+    await _db.update(
+      'tasks',
+      updatedData,
+      where: 'id = ?',
+      whereArgs: [id],
     );
+  }
+
+  Future<void> deleteTask(int taskId) async {
+    Database _db = await database();
+
+    await _db.delete(
+      'tasks',
+      where: 'id = ?',
+      whereArgs: [taskId],
+    );
+
+    await _db.delete(
+      'todos',
+      where: 'taskId = ?',
+      whereArgs: [taskId],
+    );
+  }
+
+  Future<List<Todo>> getTodos(int taskId) async {
+    Database _db = await database();
+    List<Map<String, dynamic>> _todos =
+        await _db.query('todos', where: '"taskId" = ?', whereArgs: [taskId]);
+
+    return List.generate(_todos.length, (i) {
+      return Todo(
+        id: _todos[i]['id'],
+        title: _todos[i]['title'],
+        isDone: _todos[i]['isDone'] == 1,
+        taskId: _todos[i]['taskId'],
+      );
+    });
   }
 
   Future<void> insertTodo(Todo todo) async {
@@ -49,31 +109,15 @@ class DatabaseHelper {
     );
   }
 
-  Future<List<Task>> getTasks() async {
+  Future<void> updateTodo(int id, Map<String, dynamic> updatedData) async {
     Database _db = await database();
-    List<Map<String, dynamic>> _tasks = await _db.query('tasks');
+    updatedData['isDone'] = updatedData['isDone'] ? 1 : 0;
 
-    return List.generate(_tasks.length, (i) {
-      return Task(
-        id: _tasks[i]['id'],
-        title: _tasks[i]['title'],
-        description: _tasks[i]['description'],
-      );
-    });
-  }
-
-  Future<List<Todo>> getTodos(int taskId) async {
-    Database _db = await database();
-    List<Map<String, dynamic>> _todos =
-        await _db.query('todos', where: '"taskId" = ?', whereArgs: [taskId]);
-
-    return List.generate(_todos.length, (i) {
-      return Todo(
-        id: _todos[i]['id'],
-        title: _todos[i]['title'],
-        isDone: _todos[i]['isDone'] == 1,
-        taskId: _todos[i]['taskId'],
-      );
-    });
+    await _db.update(
+      'todos',
+      updatedData,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }
