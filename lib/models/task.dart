@@ -1,10 +1,10 @@
 class Task {
-  final int? id;
+  final int id;
   final String title;
   final String description;
 
   Task({
-    this.id,
+    required this.id,
     required this.title,
     required this.description,
   });

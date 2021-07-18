@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:what_todo/models/task.dart';
+import 'package:what_todo/models/todo.dart';
 import 'package:what_todo/widgets/todo_widget.dart';
 import 'package:what_todo/helpers/database_helper.dart';
 
@@ -17,8 +18,17 @@ class TaskScreen extends StatefulWidget {
 }
 
 class _TaskScreenState extends State<TaskScreen> {
+  DatabaseHelper _dbHelper = DatabaseHelper();
+
+  int _taskId = 0;
+  String _taskTitle = '';
+
   @override
   void initState() {
+    if (widget.task != null) {
+      _taskId = widget.task!.id;
+      _taskTitle = widget.task!.title;
+    }
     super.initState();
   }
 
@@ -55,10 +65,10 @@ class _TaskScreenState extends State<TaskScreen> {
                         Expanded(
                           child: TextField(
                             onSubmitted: (value) async {
-                              if (value.isNotEmpty) {
+                              if (value != '') {
                                 if (widget.task == null) {
-                                  DatabaseHelper _dbHelper = DatabaseHelper();
                                   Task _newTask = Task(
+                                    id: 0,
                                     title: value,
                                     description: '',
                                   );
@@ -68,6 +78,8 @@ class _TaskScreenState extends State<TaskScreen> {
                                 }
                               }
                             },
+                            controller: TextEditingController()
+                              ..text = _taskTitle,
                             decoration: InputDecoration(
                               hintText: 'Enter Task Title',
                               border: InputBorder.none,
@@ -96,17 +108,75 @@ class _TaskScreenState extends State<TaskScreen> {
                       ),
                     ),
                   ),
-                  TodoWidget(
-                    text: 'Create your first task',
-                    isDone: true,
+                  FutureBuilder<List<Todo>>(
+                    initialData: [],
+                    future: _dbHelper.getTodos(_taskId),
+                    builder: (context, snapshot) {
+                      return Expanded(
+                        child: ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {},
+                              child: TodoWidget(
+                                text: snapshot.data![index].title,
+                                isDone: snapshot.data![index].isDone,
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
                   ),
-                  TodoWidget(
-                    text: 'Create your first task as well',
-                    isDone: true,
-                  ),
-                  TodoWidget(
-                    text: 'Just another todo',
-                    isDone: false,
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 20.0,
+                          height: 20.0,
+                          margin: EdgeInsets.only(
+                            right: 16.0,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(6.0),
+                            border: Border.all(
+                              color: Color(0xFF86829D),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Image(
+                            image: AssetImage('assets/images/check_icon.png'),
+                          ),
+                        ),
+                        Expanded(
+                          child: TextField(
+                            onSubmitted: (value) async {
+                              if (value != '') {
+                                if (widget.task != null) {
+                                  DatabaseHelper _dbHelper = DatabaseHelper();
+                                  Todo _newTodo = Todo(
+                                    id: 0,
+                                    title: value,
+                                    isDone: false,
+                                    taskId: widget.task!.id,
+                                  );
+                                  await _dbHelper.insertTodo(_newTodo);
+                                  setState(() {});
+                                }
+                              }
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'Enter todo item...',
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
