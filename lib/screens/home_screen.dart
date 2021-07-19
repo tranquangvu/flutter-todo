@@ -11,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  DatabaseHelper dbHelper = DatabaseHelper();
+  DatabaseHelper _dbHelper = DatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Container(
           width: double.infinity,
-          color: Color(0xFFF6F6F6),
           padding: EdgeInsets.fromLTRB(24.0, 32.0, 24.0, 0.0),
           child: Stack(
             children: [
@@ -39,8 +38,39 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                     child: FutureBuilder<List<Task>>(
                       initialData: [],
-                      future: dbHelper.getTasks(),
+                      future: _dbHelper.getTasks(),
                       builder: (context, snapshot) {
+                        if (snapshot.data!.isEmpty) {
+                          return Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(
+                              vertical: 32.0,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 64.0,
+                                  height: 64.0,
+                                  child: Image(
+                                    image: AssetImage(
+                                      'assets/images/empty_icon.png',
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  'There are no remaining tasks',
+                                  style: TextStyle(
+                                    color: Color(0xFF86829D),
+                                    height: 1.5,
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                              ]
+                            ),
+                          );
+                        }
+
                         return ListView.builder(
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {

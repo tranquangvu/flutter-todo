@@ -53,7 +53,6 @@ class _TaskScreenState extends State<TaskScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('outside');
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(

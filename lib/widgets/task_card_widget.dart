@@ -23,6 +23,13 @@ class TaskCardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.0),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFF86829D).withOpacity(.05),
+            spreadRadius: 4,
+            blurRadius: 16,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
