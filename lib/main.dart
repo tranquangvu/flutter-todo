@@ -24,7 +24,6 @@ class MyApp extends StatelessWidget {
         switch (settings.name) {
           case (TaskScreen.routeName):
             {
-              // correct screen.
               return MaterialPageRoute(
                 builder: (context) {
                   return TaskScreen(

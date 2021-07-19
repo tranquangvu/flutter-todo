@@ -1,16 +1,21 @@
-# what_todo
+# Flutter Todo Example
 
-A new Flutter project.
+Sample todo app built with Flutter
 
-## Getting Started
+## Installations
 
-This project is a starting point for a Flutter application.
+- Install flutter
+- Clone source code: `git@github.com:tranquangvu/flutter-todo.git`
+- `cd flutter-todo`
+- Get pubspecs: `flutter pub get`
+- Start any ios/android simulator
+- Run application: `flutter run`
 
-A few resources to get you started if this is your first Flutter project:
+## Screenshots
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<p float="left">
+  <img src="./docs/screenshots/ss1.png" width="48%" />
+  <img src="./docs/screenshots/ss2.png" width="48%" />
+  <img src="./docs/screenshots/ss3.png" width="48%" />
+  <img src="./docs/screenshots/ss4.png" width="48%" />
+</p>
